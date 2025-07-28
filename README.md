@@ -21,6 +21,14 @@ Authorities that already certified us:
 
 [ASACP](https://www.asacp.org/) recommends Go.cam as a solution for protecting minors online by guaranteeing secure access to adult content.
 
+## Environment Variables
+
+Copy the `.env.example` file and rename it to `.env` in the project's root directory. The service defaults to using port `3300` on `localhost`.
+
+```sh
+cp .env.example .env
+```
+
 ## Install
 
 This project was developed using Nodejs v20, we recommend using a compatible version.

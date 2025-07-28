@@ -1,5 +1,3 @@
-import { config } from './config';
-
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
@@ -8,6 +6,7 @@ import http from 'http';
 import morgan from 'morgan';
 import path from 'path';
 import favicon from 'serve-favicon';
+import { config } from './config';
 import { AvsRandom } from "./lib/random";
 import { AvsStorageSession } from "./storage/session";
 
