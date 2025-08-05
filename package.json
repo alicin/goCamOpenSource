@@ -25,7 +25,7 @@
 		"@types/express-session": "^1.18.0",
 		"@types/jquery": "^3.5.29",
 		"@types/morgan": "^1.9.10",
-		"@types/node": "^20.19.7",
+		"@types/node": "^20.12.7",
 		"@types/serve-favicon": "^2.5.7",
 		"@types/ua-parser-js": "^0.7.39",
 		"compass-importer": "^0.4.1",

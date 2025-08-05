@@ -61,9 +61,7 @@ var AvsFactoryIframeSdk;
                         case V1.Config.EVENT_ON_CHECK_IFRAME_LOADED:
                             break;
                         case V1.Config.EVENT_ON_INITIAL_VERIFICATION_SUCCESS:
-                            if (eventMessage.data.status) {
-                                _this.iframeInstance.destroy();
-                            }
+                            //
                             break;
                         case V1.Config.EVENT_ON_INITIAL_VERIFICATION_NOT_FOUND:
                             //

@@ -1,18 +1,18 @@
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import session from 'express-session';
-import http from 'http';
-import morgan from 'morgan';
-import path from 'path';
-import favicon from 'serve-favicon';
-import { config } from './config';
-import { AvsRandom } from "./lib/random";
-import { AvsStorageSession } from "./storage/session";
+import bodyParser          from 'body-parser';
+import cookieParser        from 'cookie-parser';
+import express             from 'express';
+import session             from 'express-session';
+import http                from 'http';
+import morgan              from 'morgan';
+import path                from 'path';
+import favicon             from 'serve-favicon';
+import {config}            from './config';
+import {AvsRandom}         from "./lib/random";
+import {AvsStorageSession} from "./storage/session";
 
-import * as indexRoute from './route';
+import * as indexRoute  from './route';
 import * as resultRoute from './route/result';
-import * as tokenRoute from './route/token';
+import * as tokenRoute  from './route/token';
 
 const app = express();
 declare module 'express-session' {
@@ -51,5 +51,5 @@ resultRoute.load(app, avsStorageInstance);
 indexRoute.load(app, avsStorageInstance);
 
 server.listen(config.httpServerPort, config.httpServerHost, () => {
-	console.log('http server started on: ' + config.httpServerProtocol + '://'  + config.httpServerHost + ':' + config.httpServerPort);
+	console.log('http server started on: ' + config.httpServerProtocol + '://' + config.httpServerHost + ':' + config.httpServerPort);
 });
