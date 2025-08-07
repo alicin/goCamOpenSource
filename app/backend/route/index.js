@@ -13,6 +13,7 @@ const response_1 = require("../lib/response");
 const session_1 = require("../storage/session");
 function load(app, storage) {
     app.use((req, res, next) => {
+        res.setHeader('Permissions-Policy', 'publickey-credentials-get=(self), publickey-credentials-create=(self), camera=(self)');
         next();
     });
     app.get('/', (req, res) => {
@@ -29,6 +30,8 @@ function load(app, storage) {
         let colorConfigButtonForegroundInput = req.body['colorConfigButtonForegroundInput'];
         let colorConfigButtonForegroundCTAInput = req.body['colorConfigButtonForegroundCTAInput'];
         let callbackUrl = req.body['callbackUrl'];
+        let demoPageUrl = req.body['demoPageUrl'];
+        var demoPageUrlInstance = new URL(demoPageUrl);
         if (colorConfigBodyBackgroundInput == undefined ||
             colorConfigBodyForegroundInput == undefined ||
             colorConfigButtonBackgroundInput == undefined ||
@@ -76,9 +79,9 @@ function load(app, storage) {
             creationTimestamp: creationTimestamp,
         });
         const urlToken = {
-            protocol: config_1.config.httpServerProtocol,
-            hostname: config_1.config.httpServerHost,
-            port: config_1.config.httpServerPort,
+            protocol: demoPageUrlInstance.protocol,
+            hostname: demoPageUrlInstance.hostname,
+            port: demoPageUrlInstance.port,
             pathname: testPathRedirect,
             query: {
                 d: requestPayload
@@ -86,9 +89,9 @@ function load(app, storage) {
         };
         const urlTokenString = url_1.default.format(urlToken);
         const urlIframe = {
-            protocol: config_1.config.httpServerProtocol,
-            hostname: config_1.config.httpServerHost,
-            port: config_1.config.httpServerPort,
+            protocol: demoPageUrlInstance.protocol,
+            hostname: demoPageUrlInstance.hostname,
+            port: demoPageUrlInstance.port,
             pathname: testPathIframe,
             query: {
                 d: requestPayload

@@ -10,6 +10,9 @@ import { AvsStorageSession } from "../storage/session";
 export function load(app: Express.Application, storage: AvsStorageSession) {
 
 	app.use((req: Express.Request, res: Express.Response, next: Function) => {
+
+		res.setHeader('Permissions-Policy', 'publickey-credentials-get=(self), publickey-credentials-create=(self), camera=(self)');
+
 		next();
 	});
 
@@ -31,6 +34,9 @@ export function load(app: Express.Application, storage: AvsStorageSession) {
 		let colorConfigButtonForegroundInput    = req.body['colorConfigButtonForegroundInput'];
 		let colorConfigButtonForegroundCTAInput = req.body['colorConfigButtonForegroundCTAInput'];
 		let callbackUrl                         = req.body['callbackUrl'];
+		let demoPageUrl                         = req.body['demoPageUrl'];
+
+		var demoPageUrlInstance = new URL(demoPageUrl);
 
 		if (
 			colorConfigBodyBackgroundInput == undefined ||
@@ -86,9 +92,9 @@ export function load(app: Express.Application, storage: AvsStorageSession) {
 		);
 
 		const urlToken       = {
-			protocol: config.httpServerProtocol,
-			hostname: config.httpServerHost,
-			port    : config.httpServerPort,
+			protocol: demoPageUrlInstance.protocol,
+			hostname: demoPageUrlInstance.hostname,
+			port    : demoPageUrlInstance.port,
 			pathname: testPathRedirect,
 			query   : {
 				d: requestPayload
@@ -97,9 +103,9 @@ export function load(app: Express.Application, storage: AvsStorageSession) {
 		const urlTokenString = url.format(urlToken);
 
 		const urlIframe       = {
-			protocol: config.httpServerProtocol,
-			hostname: config.httpServerHost,
-			port    : config.httpServerPort,
+			protocol: demoPageUrlInstance.protocol,
+			hostname: demoPageUrlInstance.hostname,
+			port    : demoPageUrlInstance.port,
 			pathname: testPathIframe,
 			query   : {
 				d: requestPayload

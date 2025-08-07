@@ -677,6 +677,7 @@ var AvsHome;
                     colorConfigButtonForegroundInput: colorConfigButtonForegroundInput.val().toString(),
                     colorConfigButtonForegroundCTAInput: colorConfigButtonForegroundCTAInput.val().toString(),
                     callbackUrl: accessInformationCallbackUrlInput.val(),
+                    demoPageUrl: window.location.href,
                 };
                 Ajax.getVerificationPayloadAndUrl(postData).then(function (data) {
                     exampleImplementationStartRedirectButton.removeAttr('disabled');
@@ -699,6 +700,7 @@ var AvsHome;
                     colorConfigButtonForegroundInput: colorConfigButtonForegroundInput.val().toString(),
                     colorConfigButtonForegroundCTAInput: colorConfigButtonForegroundCTAInput.val().toString(),
                     callbackUrl: accessInformationCallbackUrlInput.val(),
+                    demoPageUrl: window.location.href,
                 };
                 Ajax.getVerificationPayloadAndUrl(postData).then(function (data) {
                     iframeAvsHandler(data.iframeUrl);

@@ -127,6 +127,7 @@ namespace AvsHome {
 					colorConfigButtonForegroundInput   : colorConfigButtonForegroundInput.val().toString(),
 					colorConfigButtonForegroundCTAInput: colorConfigButtonForegroundCTAInput.val().toString(),
 					callbackUrl                        : accessInformationCallbackUrlInput.val(),
+					demoPageUrl                        : window.location.href,
 				};
 
 				Ajax.getVerificationPayloadAndUrl(postData).then(
@@ -165,6 +166,7 @@ namespace AvsHome {
 					colorConfigButtonForegroundInput   : colorConfigButtonForegroundInput.val().toString(),
 					colorConfigButtonForegroundCTAInput: colorConfigButtonForegroundCTAInput.val().toString(),
 					callbackUrl                        : accessInformationCallbackUrlInput.val(),
+					demoPageUrl                        : window.location.href,
 				};
 
 				Ajax.getVerificationPayloadAndUrl(postData).then(

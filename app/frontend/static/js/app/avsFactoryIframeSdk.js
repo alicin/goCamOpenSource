@@ -127,8 +127,17 @@ var AvsFactoryIframeSdk;
                 this.iframeElement.style.position = 'fixed';
                 this.iframeElement.style.top = '0';
                 this.iframeElement.style.left = '0';
-                this.iframeElement.allow = 'camera http://localhost:3300';
+                this.iframeElement.allow = this.getIframePermissionPolicy();
                 document.body.appendChild(this.iframeElement);
+            };
+            IframeHandler.prototype.getIframePermissionPolicy = function () {
+                var permissionPolicyUrl = window.location.href + ' ' + this.iframeLocationUrl;
+                var permissionPolicyList = [];
+                permissionPolicyList.push('camera ' + permissionPolicyUrl);
+                permissionPolicyList.push('microphone ' + permissionPolicyUrl);
+                permissionPolicyList.push('publickey-credentials-get ' + permissionPolicyUrl);
+                permissionPolicyList.push('publickey-credentials-create ' + permissionPolicyUrl);
+                return permissionPolicyList.join('; ');
             };
             IframeHandler.prototype.destroy = function () {
                 this.iframeElement.setAttribute('src', '');
