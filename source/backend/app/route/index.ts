@@ -80,6 +80,7 @@ export function load(app: Express.Application, storage: AvsStorageSession) {
 					userAgent            : userAgent,
 					websiteHostname      : config.httpServerHost,
 					showDetectedAgeNumber: true,
+					verificationTypeList : ['selfie', 'scanId'],
 				},
 				verificationVersion: AvsStorageSession.VERIFICATION_IFRAME_V1,
 				linkBack           : linkBack,

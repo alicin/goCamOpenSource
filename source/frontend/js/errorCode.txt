@@ -5,7 +5,7 @@ Frontend unique error code:
 25060:
 25068:
 25067:
-25066:
+25066: Adult age was not detected
 25065: Required qr code library not loaded
 25064:
 25063: Failed to initialize detection libraries

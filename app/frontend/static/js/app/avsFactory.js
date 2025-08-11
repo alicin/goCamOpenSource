@@ -701,6 +701,7 @@ var AvsFactory;
                     ScanIdAgeVerificationConfirmationNoButton: new Avs.Ui.Library.ScanIdAgeVerificationConfirmationNoButton(ScanIdAgeVerificationPage.instance.event),
                     DocumentProcessingCanvasLoadingOverlayArea: new Avs.Ui.Library.DocumentProcessingCanvasLoadingOverlayArea(ScanIdAgeVerificationPage.instance.event),
                     ScanIdAgeVerificationFaceSimilarityArea: new Avs.Ui.Library.ScanIdAgeVerificationFaceSimilarityArea(ScanIdAgeVerificationPage.instance.event),
+                    VideoMirrorButton: new Avs.Ui.Library.VideoMirrorButton(ScanIdAgeVerificationPage.instance.event),
                 };
                 ScanIdAgeVerificationPage.instance.ui.ScanIdAgeVerificationLoadingLabelPercentCounter.setStepNumber(7);
                 ScanIdAgeVerificationPage.instance.ui.ScanIdAgeVerificationBirthDateButton.showLoading();
@@ -771,6 +772,9 @@ var AvsFactory;
                     ScanIdAgeVerificationPage.instance.ui.ScanIdAgeVerificationDocumentProcessingArea.hide();
                     ScanIdAgeVerificationPage.instance.ui.ScanIdAgeVerificationDocumentProcessingConfirmationArea.hide();
                     ScanIdAgeVerificationPage.instance.ui.ScanIdAgeVerificationDocumentProcessingProcessArea.hide();
+                });
+                ScanIdAgeVerificationPage.instance.ui.VideoMirrorButton.onClick(function () {
+                    ScanIdAgeVerificationPage.instance.plugin.Library.Video.CameraSource.getVideoElement().toggleClass('mirrored');
                 });
             };
             return Binding;
@@ -1469,7 +1473,7 @@ var AvsFactory;
                     detectedAgeString += 'Adult';
                 }
                 else {
-                    detectedAgeString += 'Id card required';
+                    detectedAgeString += 'Minor';
                 }
                 if (Application.showDetectedAgeNumber) {
                     detectedAgeString += ' (' + age + ')';
@@ -1566,7 +1570,11 @@ var AvsFactory;
                         }
                         return;
                     }
-                    Method.goToNextStep();
+                    if (AvsFactory.StartPage.Config.VERIFICATION_TYPE_LIST.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID_NAME)) {
+                        Method.goToNextStep();
+                        return;
+                    }
+                    Method.goToFailStep(25066, 'Adult age was not detected');
                     return;
                 }
                 if (SelfieAgeDetectionPage.instance.entity.SelfieAgeDetection.totalScanNumber == SelfieAgeDetectionPage.Config.MAX_TOTAL_FACE_SCAN_NUMBER) {
@@ -1825,6 +1833,10 @@ var AvsFactory;
                 Config.PAYLOAD = config.payload || Config.PAYLOAD;
                 Config.SESSION_ID = config.sessionId || Config.SESSION_ID;
                 Config.PARTNER_COLOR_CONFIG = config.partnerColorConfig || Config.PARTNER_COLOR_CONFIG;
+                if (config.verificationTypeList.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_NAME) ||
+                    config.verificationTypeList.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID_NAME)) {
+                    Config.VERIFICATION_TYPE_LIST = config.verificationTypeList;
+                }
             };
             Config.MAIN_CONTAINER_SELECTOR = '#avsMainContainer';
             Config.START_PAGE_LAYER_SELECTOR = '#startPage';
@@ -1863,6 +1875,7 @@ var AvsFactory;
             Config.VERIFICATION_VERSION = Config.VERIFICATION_VERSION_STANDARD_V1;
             Config.SESSION_ID = null;
             Config.PARTNER_COLOR_CONFIG = null;
+            Config.VERIFICATION_TYPE_LIST = ['selfie', 'scanId'];
             Config.DEFAULT_DEBUG_LEVEL = 4;
             Config.API_BASE_ENDPOINT = '';
             Config.KEY_LOCAL_STORAGE_TERMS_AGREED = 'GoCamLocalStorageTermsWereAgreed';
@@ -1918,6 +1931,8 @@ var AvsFactory;
                 if (Application.forceIpCountry) {
                     ipCountry = Application.forceIpCountry.toUpperCase();
                 }
+                StartPage.instance.ui.VerificationTypeTabs.hideTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER);
+                StartPage.instance.ui.VerificationTypeTabs.hideTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER);
                 // get this dynamically later
                 var countryToTabVisibilityConfig = {
                     "DE": (_a = {},
@@ -1926,16 +1941,21 @@ var AvsFactory;
                         _a)
                 };
                 if (typeof countryToTabVisibilityConfig[ipCountry] != "undefined") {
-                    if (!countryToTabVisibilityConfig[ipCountry][Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER]) {
-                        StartPage.instance.ui.VerificationTypeTabs.hideTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER);
+                    if (countryToTabVisibilityConfig[ipCountry][Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER]) {
+                        StartPage.instance.ui.VerificationTypeTabs.showTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER);
                     }
-                    if (!countryToTabVisibilityConfig[ipCountry][Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER]) {
-                        StartPage.instance.ui.VerificationTypeTabs.hideTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER);
+                    if (countryToTabVisibilityConfig[ipCountry][Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER]) {
+                        StartPage.instance.ui.VerificationTypeTabs.showTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER);
                     }
                 }
-                // handle also the selected tab together with the visible tabs dynamically
-                var defaultTab = StartPage.instance.ui.VerificationTypeTabs.verificationTypeToTabNumber(StartPage.Config.VERIFICATION_TYPE_DEFAULT);
-                StartPage.instance.ui.VerificationTypeTabs.selectTab(defaultTab);
+                else {
+                    if (StartPage.Config.VERIFICATION_TYPE_LIST.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_NAME)) {
+                        StartPage.instance.ui.VerificationTypeTabs.showTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SELFIE_NUMBER);
+                    }
+                    if (StartPage.Config.VERIFICATION_TYPE_LIST.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID_NAME)) {
+                        StartPage.instance.ui.VerificationTypeTabs.showTab(Avs.Ui.Library.VerificationTypeTabs.TAB_SCAN_ID_NUMBER);
+                    }
+                }
                 var termsWereAgreed = Avs.Helper.Common.getLocalStorageBooleanValue(StartPage.Config.KEY_LOCAL_STORAGE_TERMS_AGREED);
                 if (termsWereAgreed === true) {
                     StartPage.instance.ui.TermsAndConditionsCheckbox.check();
@@ -2047,8 +2067,10 @@ var AvsFactory;
                 // https://github.com/mexitek/phpColors/blob/master/src/Mexitek/PHPColors/Color.php#L474
                 Method.applyPartnerColor();
                 $('body').attr('style', '');
+                var defaultTab = StartPage.instance.ui.VerificationTypeTabs.getFirstVisibleTab();
+                StartPage.instance.ui.VerificationTypeTabs.selectTab(defaultTab);
+                StartPage.instance.ui.VerificationTypeTabs.clickTab(defaultTab);
                 StartPage.instance.postMessage.emit(StartPage.Config.EVENT_ON_START_PAGE_LOADED);
-                StartPage.instance.entity.VerificationStepGlobal.verificationType = StartPage.Config.VERIFICATION_TYPE_DEFAULT;
                 StartPage.instance.entity.VerificationStepGlobal.partnerId = StartPage.Config.PARTNER_ID;
                 StartPage.instance.entity.VerificationStepGlobal.payload = StartPage.Config.PAYLOAD;
                 StartPage.instance.entity.VerificationStepGlobal.sessionId = StartPage.Config.SESSION_ID;

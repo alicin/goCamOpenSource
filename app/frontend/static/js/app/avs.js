@@ -16271,6 +16271,8 @@ var Avs;
             VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_AND_SCAN_ID_FORCED = 2;
             VerificationStepGlobal.VERIFICATION_TYPE_CREDIT_CARD = 3;
             VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID = 4;
+            VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_NAME = 'selfie';
+            VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID_NAME = 'scanId';
             VerificationStepGlobal.FACE_API_TYPE_FAST = 1;
             VerificationStepGlobal.FACE_API_TYPE_PRECISE = 2;
             VerificationStepGlobal.TESSERACT_TYPE_FAST_EN = 1;
@@ -19182,6 +19184,9 @@ var Avs;
                 Tabs.prototype.isSelected = function (tabNumber) {
                     return this.element.find('.avsTab:eq(' + tabNumber + ')').hasClass('isSelected');
                 };
+                Tabs.prototype.getFirstVisibleTab = function () {
+                    return this.element.find('.avsTab:not(.isHidden)').index();
+                };
                 Tabs.prototype.selectTab = function (tabNumber) {
                     this.deselectAllTabs();
                     this.unHighlightTab(tabNumber);
@@ -19189,6 +19194,9 @@ var Avs;
                         .addClass('isSelected');
                     this.element.parent().find('.avsTabContent').addClass('isHidden');
                     this.element.parent().find('.avsTabContent:eq(' + tabNumber + ')').removeClass('isHidden');
+                };
+                Tabs.prototype.clickTab = function (tabNumber) {
+                    this.element.find('.avsTab:eq(' + tabNumber + ')').trigger('click');
                 };
                 Tabs.prototype.deselectAllTabs = function () {
                     this.element.find('.avsTab').removeClass('isSelected');
@@ -23476,6 +23484,58 @@ var Avs;
                 return TermsAndConditionsBackButton;
             }(Avs.Ui.Handler.Button));
             Library.TermsAndConditionsBackButton = TermsAndConditionsBackButton;
+        })(Library = Ui.Library || (Ui.Library = {}));
+    })(Ui = Avs.Ui || (Avs.Ui = {}));
+})(Avs || (Avs = {}));
+
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Avs;
+(function (Avs) {
+    var Ui;
+    (function (Ui) {
+        var Library;
+        (function (Library) {
+            var VideoMirrorButton = /** @class */ (function (_super) {
+                __extends(VideoMirrorButton, _super);
+                function VideoMirrorButton(event, selector) {
+                    var _this = _super.call(this, event) || this;
+                    _this.event = event;
+                    _this.getElement(selector);
+                    _this.initStates();
+                    return _this;
+                }
+                VideoMirrorButton.prototype.getElement = function (selector) {
+                    if (!selector) {
+                        selector = '#videoMirrorButton';
+                    }
+                    this.element = $(selector);
+                };
+                VideoMirrorButton.prototype.initStates = function () {
+                    var entity = Avs.Entity.Ui.getInstance();
+                    entity.states.VideoMirrorButton = {
+                        visible: this.element.is(':visible'),
+                        enabled: !this.element.attr('disabled')
+                    };
+                    this.states = entity.states.VideoMirrorButton;
+                };
+                return VideoMirrorButton;
+            }(Avs.Ui.Handler.Button));
+            Library.VideoMirrorButton = VideoMirrorButton;
         })(Library = Ui.Library || (Ui.Library = {}));
     })(Ui = Avs.Ui || (Avs.Ui = {}));
 })(Avs || (Avs = {}));

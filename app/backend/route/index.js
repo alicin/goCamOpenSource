@@ -69,6 +69,7 @@ function load(app, storage) {
                 userAgent: userAgent,
                 websiteHostname: config_1.config.httpServerHost,
                 showDetectedAgeNumber: true,
+                verificationTypeList: ['selfie', 'scanId'],
             },
             verificationVersion: session_1.AvsStorageSession.VERIFICATION_IFRAME_V1,
             linkBack: linkBack,

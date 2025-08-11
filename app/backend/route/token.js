@@ -74,6 +74,7 @@ function load(app, storage) {
                 }),
                 isLiveness: true,
                 showDetectedAgeNumber: payloadParsed['httpParamList']['showDetectedAgeNumber'] || false,
+                verificationTypeList: payloadParsed['httpParamList']['verificationTypeList'] || [],
                 verificationVersion: verificationVersion,
                 d: payload,
                 sessionId: sessionId,

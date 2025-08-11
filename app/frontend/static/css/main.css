@@ -816,6 +816,22 @@ a {
 #avsMainContainer .page#termsAndConditionsArea .introHeading {
   margin-left: 0;
 }
+#avsMainContainer .page .videoMirrorContainer {
+  z-index: 5;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 32px;
+  opacity: 0.8;
+}
+#avsMainContainer .page .videoMirrorContainer a {
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+}
+#avsMainContainer .page .videoMirrorContainer a:hover {
+  opacity: 0.5;
+}
 #avsMainContainer #debugArea {
   position: fixed;
   top: 0;

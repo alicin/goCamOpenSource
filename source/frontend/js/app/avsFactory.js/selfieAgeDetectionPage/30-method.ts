@@ -34,7 +34,7 @@ namespace AvsFactory {
 					detectedAgeString += 'Adult';
 				}
 				else {
-					detectedAgeString += 'Id card required';
+					detectedAgeString += 'Minor';
 				}
 
 				if ((<any>Application).showDetectedAgeNumber) {
@@ -193,7 +193,12 @@ namespace AvsFactory {
 						return;
 					}
 
-					Method.goToNextStep();
+					if (StartPage.Config.VERIFICATION_TYPE_LIST.includes(Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID_NAME)) {
+						Method.goToNextStep();
+						return;
+					}
+
+					Method.goToFailStep(25066, 'Adult age was not detected');
 					return;
 
 				}

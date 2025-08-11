@@ -917,6 +917,27 @@ a {
 
 		}
 
+		.videoMirrorContainer {
+			z-index: 5;
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			font-size: 32px;
+			opacity: 0.8;
+
+			a {
+				cursor: pointer;
+				color: $colorWhite;
+				padding: 10px;
+
+				&:hover {
+					opacity: 0.5;
+				}
+
+			}
+
+		}
+
 	}
 
 	#debugArea {

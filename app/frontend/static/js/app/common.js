@@ -838,6 +838,7 @@ var AvsToken;
             payload: Application.d,
             sessionId: Application.sessionId,
             partnerColorConfig: Application.partnerColorConfig,
+            verificationTypeList: Application.verificationTypeList,
         });
         AvsFactory.StartPage.init();
     }

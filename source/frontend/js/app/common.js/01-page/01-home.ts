@@ -9,6 +9,7 @@ declare namespace Application {
 	export var d: string;
 	export var sessionId: string;
 	export var partnerColorConfig: any;
+	export var verificationTypeList: string[];
 	export var ipCountry: string;
 	export var forceIpCountry: string;
 	export var deviceInfo: {
