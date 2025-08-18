@@ -1993,6 +1993,7 @@ var AvsFactory;
                     StartPage.instance.entity.VerificationStepGlobal.tesseractType = Avs.Entity.VerificationStepGlobal.TESSERACT_TYPE_PRECISE_FR;
                     switch (StartPage.instance.entity.VerificationStepGlobal.verificationType) {
                         case Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_AND_SCAN_ID_OPTIONAL:
+                        case Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_AND_SCAN_ID_FORCED:
                             AvsFactory.SelfieAgeDetectionIntro.init();
                             StartPage.Method.showPageStep(StartPage.Config.SELFIE_AGE_DETECTION_INTRO_LAYER);
                             break;

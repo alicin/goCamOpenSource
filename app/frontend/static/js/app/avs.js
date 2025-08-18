@@ -24694,6 +24694,7 @@ var Avs;
                 VerificationTypeTabs.prototype.verificationTypeToTabNumber = function (verificationType) {
                     switch (verificationType) {
                         case Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_AND_SCAN_ID_OPTIONAL:
+                        case Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SELFIE_AND_SCAN_ID_FORCED:
                             return VerificationTypeTabs.TAB_SELFIE_NUMBER;
                         case Avs.Entity.VerificationStepGlobal.VERIFICATION_TYPE_SCAN_ID:
                             return VerificationTypeTabs.TAB_SCAN_ID_NUMBER;
