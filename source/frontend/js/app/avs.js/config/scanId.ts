@@ -688,6 +688,62 @@ namespace Avs {
 					]
 				}
 			},
+			"CN": {
+				"countryName": "China, People's Republic of",
+				"hasMultipleState": false,
+				"idConfig": {
+					"idCard": [
+						{
+							"year": 2004,
+							"tesseractConfig": {
+								"tessedit_char_whitelist": "1234567890 ",
+								"tessedit_ocr_engine_mode": 2
+							},
+							"stripWhiteSpace": false,
+							"textMatcherRule": [
+								"/([0-9]{4})\\s+([0-9]{1,2})\\s+([0-9]{1,2})/gi"
+							],
+							"dateComponentsPosition": [
+								{
+									"year": 1,
+									"month": 2,
+									"day": 3
+								}
+							],
+							"monthNameLanguage": "en",
+							"brightness": 10,
+							"contrast": 80,
+							"threshold": 0,
+							"idSizeList": {
+								"container": {
+									"width": 600,
+									"height": 379,
+									"ratioType": 1
+								},
+								"birthDateArea": {
+									"width": 310,
+									"height": 80,
+									"top": 60,
+									"left": -50
+								},
+								"faceArea": {
+									"width": 190,
+									"height": 250,
+									"top": 60,
+									"left": 380,
+									"birthDateAreaDistance": {
+										"top": 0,
+										"left": -430
+									}
+								}
+							},
+							"idRegionZoom": 2
+						}
+					],
+					"passport": [],      // Passport not implemented
+					"driverLicence": []  // Driver License not implemented
+				}
+			},
 			"HR": {
 				"countryName": "Croatia",
 				"hasMultipleState": false,
@@ -2669,6 +2725,62 @@ namespace Avs {
 							"idRegionZoom": 2
 						}
 					]
+				}
+			},
+			"HK": {
+				"countryName": "Hong Kong",
+				"hasMultipleState": false,
+				"idConfig": {
+					"idCard": [
+						{
+							"year": 2018,
+							"tesseractConfig": {
+								"tessedit_char_whitelist": "1234567890-",
+								"tessedit_ocr_engine_mode": 2
+							},
+							"stripWhiteSpace": false,
+							"textMatcherRule": [
+								"/([0-9]{2})-([0-9]{2})-([0-9]{4})/gi"
+							],
+							"dateComponentsPosition": [
+								{
+									"day": 1,
+									"month": 2,
+									"year": 3
+								}
+							],
+							"monthNameLanguage": "en",
+							"brightness": 10,
+							"contrast": 80,
+							"threshold": 0,
+							"idSizeList": {
+								"container": {
+									"width": 600,
+									"height": 379,
+									"ratioType": 1
+								},
+								"birthDateArea": {
+									"width": 250,
+									"height": 80,
+									"top": 120,
+									"left": 250
+								},
+								"faceArea": {
+									"width": 165,
+									"height": 205,
+									"top": 105,
+									"left": 45,
+									"birthDateAreaDistance": {
+										"top": 15,
+										"left": 205
+									}
+								}
+							},
+							"idRegionZoom": 3
+						}
+					],
+					"passport": [],      // Passport not implemented
+					"driverLicence": []  // Driver License not a valid photo ID
 				}
 			},
 			"HU": {
