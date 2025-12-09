@@ -252,7 +252,9 @@ var AvsFactory;
                 if (!ResultPageSuccess.instance.entity.VerificationStepGlobal.verificationComplete) {
                     return;
                 }
-                if (ResultPageSuccess.instance.entity.SelfieAgeDetection.averageAge > 0) {
+                if (ResultPageSuccess.instance.entity.SelfieAgeDetection.videoDeviceData != null &&
+                    !ResultPageSuccess.instance.entity.SelfieAgeDetection.videoDeviceData.isVirtual &&
+                    ResultPageSuccess.instance.entity.SelfieAgeDetection.averageAge > 0) {
                     ResultPageSuccess.instance.ui.ResultPageSuccessSelfieArea.setContent('<strong>' +
                         AvsFactory.SelfieAgeDetectionPage.Method.getAgeAreaString('Final face average age', ResultPageSuccess.instance.entity.SelfieAgeDetection.averageAge) +
                         '</strong>');
@@ -1369,9 +1371,9 @@ var AvsFactory;
             Config.CAMERA_SOURCE_CANVAS_OVERLAY_ELEMENT = '#selfieVideoOverlayCanvas';
             Config.FACE_GUIDE_ELEMENT = '#faceGuide';
             Config.FACE_API_WEIGHTS_PATH = '/static/js/appFiles/faw/';
-            Config.MAX_VALID_FACE_SCAN_NUMBER = 3;
-            Config.MAX_TOTAL_FACE_SCAN_NUMBER = 40;
-            Config.MAX_TOTAL_FACE_EXPRESSION_SCAN_NUMBER = 40;
+            Config.MAX_VALID_FACE_SCAN_NUMBER = 5;
+            Config.MAX_TOTAL_FACE_SCAN_NUMBER = 50;
+            Config.MAX_TOTAL_FACE_EXPRESSION_SCAN_NUMBER = 50;
             Config.MIN_ALLOWED_AVERAGE_AGE = 25;
             Config.FACE_SCAN_INTERVAL_MS = 400;
             Config.EVENT_NAME_PREFIX = 'selfieAgeDetectionPage';
@@ -1581,18 +1583,14 @@ var AvsFactory;
                     Method.goToFailStep(25057, 'Could not detect enough faces from your device video');
                     return;
                 }
-                setTimeout(function () {
-                    Method.detectFace();
-                }, SelfieAgeDetectionPage.Config.FACE_SCAN_INTERVAL_MS);
+                requestAnimationFrame(Method.detectFace);
             };
             Method.checkExpressionStep = function () {
                 if (SelfieAgeDetectionPage.instance.entity.SelfieAgeDetection.totalExpressionScanNumber == SelfieAgeDetectionPage.Config.MAX_TOTAL_FACE_EXPRESSION_SCAN_NUMBER) {
                     Method.goToFailStep(25061, 'Could not detect enough faces from your device video');
                     return;
                 }
-                setTimeout(function () {
-                    Method.detectFaceExpression();
-                }, SelfieAgeDetectionPage.Config.FACE_SCAN_INTERVAL_MS);
+                requestAnimationFrame(Method.detectFaceExpression);
             };
             Method.detectFaceExpression = function () {
                 SelfieAgeDetectionPage.instance.entity.SelfieAgeDetection.totalExpressionScanNumber++;
@@ -1657,6 +1655,10 @@ var AvsFactory;
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.datachannels.webrtc.stopStreaming();
             };
             Method.goToSuccessStep = function () {
+                if (SelfieAgeDetectionPage.instance.entity.SelfieAgeDetection.videoDeviceData.isVirtual) {
+                    Method.goToFailStep(25067, 'Could not detect enough faces from your device video');
+                    return;
+                }
                 AvsFactory.StartPage.Method.showPageStep(AvsFactory.StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
                 AvsFactory.ResultPageSuccess.init();
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.datachannels.webrtc.stopStreaming();
@@ -1702,7 +1704,9 @@ var AvsFactory;
                     AvsFactory.StartPage.Method.renderError(25047, 'Webcam initialization error!');
                     return;
                 });
-                SelfieAgeDetectionPage.instance.event.on(SelfieAgeDetectionPage.Config.EVENT_NAME_PREFIX + '.' + Avs.DataChannel.Webrtc.ON_VIDEO_PLAY, function (event) {
+                SelfieAgeDetectionPage.instance.event.on(SelfieAgeDetectionPage.Config.EVENT_NAME_PREFIX + '.' + Avs.DataChannel.Webrtc.ON_VIDEO_PLAY, function (event, device) {
+                    var webcamUtility = new Avs.Helper.WebcamUtility();
+                    SelfieAgeDetectionPage.instance.entity.SelfieAgeDetection.videoDeviceData = webcamUtility.analyzeDevice(device);
                     SelfieAgeDetectionPage.instance.ui.SelfieAgeDetectionStatusLabel.setValue('Initializing detection libraries');
                     SelfieAgeDetectionPage.instance.debug.logToContainer('<p>Starting face detection.</p>');
                     SelfieAgeDetectionPage.instance.plugin.Library.Ml.FaceApi.loadDetector(function (result) {

@@ -736,8 +736,8 @@ var Avs;
                             "idRegionZoom": 2
                         }
                     ],
-                    "passport": [],      // Passport not implemented
-                    "driverLicence": []  // Driver License not implemented
+                    "passport": [], // Passport not implemented
+                    "driverLicence": [] // Driver License not implemented
                 }
             },
             "HR": {
@@ -2773,8 +2773,8 @@ var Avs;
                             "idRegionZoom": 3
                         }
                     ],
-                    "passport": [],      // Passport not implemented
-                    "driverLicence": []  // Driver License not a valid photo ID
+                    "passport": [], // Passport not implemented
+                    "driverLicence": [] // Driver License not a valid photo ID
                 }
             },
             "HU": {
@@ -16057,8 +16057,12 @@ var Avs;
                     _this.streamInstance = stream;
                     _this.videoElement.srcObject = stream;
                     _this.videoElement.onplay = function () {
+                        var videoTrack = stream.getVideoTracks()[0];
                         setTimeout(function () {
-                            _this.event.emit(_this.eventNamesPrefix + Webrtc.ON_VIDEO_PLAY);
+                            _this.event.emit(_this.eventNamesPrefix + Webrtc.ON_VIDEO_PLAY, {
+                                label: videoTrack.label,
+                                deviceId: videoTrack.getSettings().deviceId,
+                            });
                         }, Webrtc.ON_VIDEO_PLAY_DELAY_MS);
                     };
                 }, function (error) {
@@ -18093,6 +18097,160 @@ var Avs;
 })(Avs || (Avs = {}));
 
 "use strict";
+var Avs;
+(function (Avs) {
+    var Helper;
+    (function (Helper) {
+        var WebcamUtility = /** @class */ (function () {
+            function WebcamUtility() {
+                this.virtualCameraPatterns = [
+                    // Popular Virtual Camera Software
+                    'obs', 'obs-camera', 'obs virtual camera', 'obs studio',
+                    'manycam', 'many cam', 'manycam virtual webcam',
+                    'splitcam', 'split cam', 'splitcam video driver',
+                    'xsplit', 'xsplit vcam', 'xsplit broadcaster',
+                    'streamlabs', 'streamlabs obs', 'streamlabs virtual camera',
+                    'wirecast', 'wirecast virtual camera',
+                    // CyberLink Software
+                    'youcam', 'you cam', 'cyberlink youcam', 'perfectcam',
+                    // Other Popular Virtual Cameras
+                    'altercam', 'alter cam',
+                    'webcamoid', 'webcam oid',
+                    'snap camera', 'snapcamera', 'snap cam',
+                    'chromacam', 'chroma cam',
+                    'virtual cam', 'virtualcam', 'virtual camera',
+                    'logitech capture',
+                    'nvidia broadcast', 'nvidia rtx voice',
+                    // Mobile/Phone Camera Apps
+                    'droidcam', 'droid cam', 'droidcamx',
+                    'epoccam', 'epoc cam', 'elgato epoccam',
+                    'iriun', 'iriun webcam',
+                    'ip webcam', 'ipwebcam',
+                    'camo', 'camo studio',
+                    // Professional/Streaming Software
+                    'vmix', 'v-mix', 'vmix virtual camera',
+                    'ecamm', 'ecamm live',
+                    'mmhmm', 'mmhmm virtual camera',
+                    'reincubate camo',
+                    'continuity camera',
+                    // Open Source/Free Software
+                    'v4l2loopback', 'v4l2 loopback',
+                    'fakecam', 'fake cam',
+                    'virtual webcam', 'virtual web cam',
+                    'dummy camera', 'test camera',
+                    // Generic Virtual Device Names
+                    'virtual', 'fake', 'dummy', 'test', 'mock',
+                    'simulator', 'emulator', 'software',
+                    // Camera Brand Software (when used as virtual cameras)
+                    'canon eos webcam', 'canon webcam utility',
+                    'sony imaging edge', 'sony webcam',
+                    'nikon webcam utility',
+                    'fujifilm x webcam',
+                    'olympus om-d webcam',
+                    'panasonic lumix webcam',
+                    // Video Conferencing with Virtual Features
+                    'zoom virtual camera', 'teams camera',
+                    'skype camera', 'discord camera',
+                    // Game Streaming Software
+                    'gameshow', 'game show',
+                    'action', 'mirillis action',
+                    'bandicam', 'bandi cam',
+                    'camtasia', 'cam tasia',
+                    // Additional Virtual Camera Software
+                    'facerig', 'face rig',
+                    'animaze', 'ani maze',
+                    'vcam', 'v cam',
+                    'webcam studio', 'webcamstudio',
+                    'cheese', // Linux webcam software
+                    'guvcview', // Linux camera viewer
+                    // AI/Filter Camera Apps
+                    'beauty cam', 'beautycam',
+                    'perfect365', 'perfect 365',
+                    'faceapp', 'face app',
+                    'msqrd', 'avatarify',
+                    // Additional patterns that might indicate virtual cameras
+                    'screen capture', 'desktop capture',
+                    'display capture', 'window capture',
+                    'broadcaster', 'streamer', 'streaming'
+                ];
+                this.virtualCameraRegex = new RegExp(this.virtualCameraPatterns
+                    .map(function (pattern) { return pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); })
+                    .join('|'), 'i');
+                this.suspiciousPatterns = {
+                    generic: /^(camera|webcam|video|device|usb)\s*\d*$/i,
+                    loopback: /loopback|loop\s*back/i,
+                    capture: /capture|screen|display|desktop|window/i,
+                    virtual: /virtual|fake|dummy|test|mock|sim/i,
+                    software: /software|app|program|tool/i,
+                    streaming: /stream|broadcast|live|obs|xsplit/i
+                };
+            }
+            WebcamUtility.prototype.analyzeDevice = function (device) {
+                var label = device.label.toLowerCase();
+                var deviceId = device.deviceId;
+                var analysis = {
+                    isVirtual: false,
+                    isSuspicious: false,
+                    confidence: 0,
+                    reasons: [],
+                    patterns: {}
+                };
+                if (this.virtualCameraRegex.test(label)) {
+                    analysis.isVirtual = true;
+                    analysis.confidence += 90;
+                    analysis.reasons.push('Matches known virtual camera software pattern');
+                    for (var _i = 0, _a = this.virtualCameraPatterns; _i < _a.length; _i++) {
+                        var pattern = _a[_i];
+                        if (label.includes(pattern)) {
+                            analysis.patterns.matched = pattern;
+                            break;
+                        }
+                    }
+                }
+                for (var key in this.suspiciousPatterns) {
+                    var regex = this.suspiciousPatterns[key];
+                    if (regex.test(label)) {
+                        analysis.patterns[key] = true;
+                        analysis.isSuspicious = true;
+                        analysis.confidence += 30;
+                        analysis.reasons.push("Matches " + key + " pattern");
+                    }
+                }
+                if (this.analyzeDeviceId(deviceId)) {
+                    analysis.isSuspicious = true;
+                    analysis.confidence += 20;
+                    analysis.reasons.push('Suspicious device ID pattern');
+                }
+                if (!device.label || device.label.trim() === '' || device.label === 'Default') {
+                    analysis.isSuspicious = true;
+                    analysis.confidence += 15;
+                    analysis.reasons.push('Empty or default device label');
+                }
+                if (analysis.confidence >= 60) {
+                    analysis.isVirtual = true;
+                }
+                else if (analysis.confidence >= 30) {
+                    analysis.isSuspicious = true;
+                }
+                return analysis;
+            };
+            WebcamUtility.prototype.analyzeDeviceId = function (deviceId) {
+                // Some virtual cameras use predictable or default device IDs
+                var suspiciousIdPatterns = [
+                    /^default$/i,
+                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, // Some virtual cameras use generic UUIDs
+                    /virtual|fake|dummy/i,
+                    /^(test|mock|sim)/i
+                ];
+                return suspiciousIdPatterns.some(function (pattern) { return pattern.test(deviceId); });
+            };
+            return WebcamUtility;
+        }());
+        Helper.WebcamUtility = WebcamUtility;
+    })(Helper = Avs.Helper || (Avs.Helper = {}));
+})(Avs || (Avs = {}));
+
+"use strict";
 
 "use strict";
 var Avs;
@@ -19663,6 +19821,10 @@ var Avs;
                         _this.landmarksModelLoaded = false;
                         _this.recognitionModelLoaded = false;
                         _this.faceExpressionModelLoaded = false;
+                        _this.detectFaceTimeoutTriggerNumber = 0;
+                        if (_this.config.tfBackend !== undefined) {
+                            window.faceapi.tf.setBackend(_this.config.tfBackend);
+                        }
                         return _this;
                     }
                     FaceApi.prototype.loadDetector = function (cb) {
@@ -19778,23 +19940,49 @@ var Avs;
                         });
                     };
                     FaceApi.prototype.detectFace = function (cb) {
+                        var _this = this;
                         // detector must be loaded
                         if (!this.detectorLoaded) {
                             this.debug.error(25016, 'Face detection detector must be loaded');
                             cb(null);
                             return;
                         }
+                        var doCallback = true;
+                        var timeoutHandler = setTimeout(function () {
+                            _this.detectFaceTimeoutTriggerNumber++;
+                            doCallback = false;
+                            // if detect face stalls 2 times in a row, try switching the backend to wasm
+                            if (_this.detectFaceTimeoutTriggerNumber == FaceApi.TIMEOUT_TRIGGER_TRESHOLD) {
+                                window.faceapi.tf.setBackend(FaceApi.CONFIG_TF_BACKEND_WASM);
+                                window.faceapi.tf.ready().then(function () {
+                                    cb(null);
+                                }, function (error) {
+                                    cb(null);
+                                });
+                                return;
+                            }
+                            cb(null);
+                            return;
+                        }, FaceApi.TIMEOUT_TRIGGER);
                         this.debug.info('detect face');
                         this.faceApiClass.detectSingleFace(this.videoElement, this.detectorOptions).withFaceLandmarks().withFaceDescriptor().then(function (result) {
+                            clearTimeout(timeoutHandler);
                             // face was detected
                             if (typeof result !== 'undefined') {
-                                cb(result);
+                                if (doCallback) {
+                                    cb(result);
+                                }
                             }
                             else {
-                                cb(null);
+                                if (doCallback) {
+                                    cb(null);
+                                }
                             }
                         }, function (error) {
-                            cb(null);
+                            clearTimeout(timeoutHandler);
+                            if (doCallback) {
+                                cb(null);
+                            }
                         });
                     };
                     FaceApi.prototype.detectFaceFromCustomElement = function (customElement, cb) {
@@ -19948,7 +20136,11 @@ var Avs;
                     FaceApi.SSD_MOBILE_NET_MIN_CONFIDENCE = 0.5;
                     FaceApi.TINY_FACE_DETECTOR_INPUT_SIZE = 416;
                     FaceApi.TINY_FACE_DETECTOR_SCORE_THRESHOLD = 0.3;
+                    FaceApi.CONFIG_TF_BACKEND_WEBGL = 'webgl';
+                    FaceApi.CONFIG_TF_BACKEND_WASM = 'wasm';
                     FaceApi.EXPRESSION_MIN_CONFIDENCE = 0.5;
+                    FaceApi.TIMEOUT_TRIGGER = 4000;
+                    FaceApi.TIMEOUT_TRIGGER_TRESHOLD = 2;
                     FaceApi.EXPRESSION_ANGRY = 'angry';
                     FaceApi.EXPRESSION_DISGUSTED = 'disgusted';
                     FaceApi.EXPRESSION_FEARFUL = 'fearful';

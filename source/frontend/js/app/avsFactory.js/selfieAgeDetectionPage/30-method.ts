@@ -208,9 +208,7 @@ namespace AvsFactory {
 					return;
 				}
 
-				setTimeout(() => {
-					Method.detectFace();
-				}, Config.FACE_SCAN_INTERVAL_MS);
+				requestAnimationFrame(Method.detectFace);
 
 			}
 
@@ -221,9 +219,7 @@ namespace AvsFactory {
 					return;
 				}
 
-				setTimeout(() => {
-					Method.detectFaceExpression();
-				}, Config.FACE_SCAN_INTERVAL_MS);
+				requestAnimationFrame(Method.detectFaceExpression);
 
 			}
 
@@ -333,6 +329,12 @@ namespace AvsFactory {
 			}
 
 			public static goToSuccessStep() {
+
+				if (instance.entity.SelfieAgeDetection.videoDeviceData.isVirtual) {
+					Method.goToFailStep(25067, 'Could not detect enough faces from your device video');
+					return;
+				}
+
 				StartPage.Method.showPageStep(StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
 				ResultPageSuccess.init();
 
