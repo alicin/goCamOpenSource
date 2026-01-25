@@ -18,73 +18,83 @@
     visibility: visible !important;
 }
 
-// Brightness Indicator (Premium iOS Vertical)
+// Brightness Indicator (macOS Tahoe Style)
 @keyframes brightnessFluid {
+    0%, 100% { height: 20%; }
+    50% { height: 95%; }
+}
+
+@keyframes sunGlow {
     0%, 100% { 
-        height: 15%; 
-        opacity: 0.6;
-        filter: brightness(1);
+        color: rgba(255, 255, 255, 0.7);
+        filter: drop-shadow(0 0 0 transparent);
     }
-    45%, 55% { 
-        height: 98%; 
-        opacity: 1;
-        filter: brightness(1.2);
+    50% { 
+        color: #ffcc00;
+        filter: drop-shadow(0 0 6px rgba(255, 200, 0, 0.6));
     }
 }
 
-@keyframes iconPulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    45%, 55% { transform: scale(1.15); opacity: 1; }
+@keyframes chevronBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-3px); opacity: 1; }
 }
 
 .brightness-indicator {
     position: absolute;
-    top: 30px;
-    right: 30px;
-    background: rgba(25, 25, 25, 0.75);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.2);
-    padding: 18px 10px;
-    border-radius: 35px;
+    top: 16px;
+    right: 16px;
+    background: rgba(30, 30, 30, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    padding: 10px 5px;
+    border-radius: 14px;
     display: none;
     z-index: 2147483647;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease;
 
     .ios-slider {
         display: flex;
         flex-direction: column-reverse;
         align-items: center;
-        gap: 14px;
-        height: 180px;
-        width: 44px;
+        gap: 6px;
+        height: 110px;
+        width: 16px;
 
-        .icon-moon, .icon-sun {
-            color: #fff;
+        .icon-moon {
+            color: rgba(255, 255, 255, 0.5);
             flex-shrink: 0;
-            transition: all 0.4s ease;
+        }
+
+        .icon-sun {
+            color: rgba(255, 255, 255, 0.7);
+            flex-shrink: 0;
+        }
+
+        .icon-chevron {
+            color: rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
         }
 
         .slider-track {
             flex-grow: 1;
             width: 100%;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
             overflow: hidden;
             position: relative;
-            box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.1);
 
             .slider-fill {
                 position: absolute;
-                bottom: 2px;
-                left: 2px;
-                right: 2px;
-                width: calc(100% - 4px);
-                height: 15%;
-                background: linear-gradient(to top, #ffffff, #f0f0f0);
-                border-radius: 20px;
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                bottom: 1px;
+                left: 1px;
+                right: 1px;
+                width: calc(100% - 2px);
+                height: 20%;
+                background: #fff;
+                border-radius: 7px;
             }
         }
     }
@@ -93,11 +103,15 @@
         display: flex !important;
         
         .slider-fill {
-            animation: brightnessFluid 3.5s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            animation: brightnessFluid 2s infinite ease-in-out;
         }
 
         .icon-sun {
-            animation: iconPulse 3.5s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            animation: sunGlow 2s infinite ease-in-out;
+        }
+
+        .icon-chevron {
+            animation: chevronBounce 0.8s infinite ease-in-out;
         }
     }
 }
