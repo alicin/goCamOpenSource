@@ -18,6 +18,9 @@ namespace AvsFactory {
 
 				instance.ui.SelfieAgeDetectionStatusLabel.setValue('Trying to access your camera');
 
+				// Show brightness indicator when video starts
+				$('.brightness-indicator').addClass('visible');
+
 				instance.plugin.Library.Video.CameraSource.init();
 				instance.plugin.Library.Video.CameraSource.showVideo();
 
@@ -335,6 +338,8 @@ namespace AvsFactory {
 					return;
 				}
 
+				$('.brightness-indicator').removeClass('visible');
+
 				StartPage.Method.showPageStep(StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
 				ResultPageSuccess.init();
 
@@ -342,6 +347,7 @@ namespace AvsFactory {
 			}
 
 			public static goToFailStep(failCode: number, failReason: string) {
+				$('.brightness-indicator').removeClass('visible');
 				StartPage.Method.showPageStep(StartPage.Config.RESULT_PAGE_FAIL_LAYER);
 
 				ResultPageFail.init();
