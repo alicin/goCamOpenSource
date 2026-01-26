@@ -1372,8 +1372,8 @@ var AvsFactory;
             Config.FACE_GUIDE_ELEMENT = '#faceGuide';
             Config.FACE_API_WEIGHTS_PATH = '/static/js/appFiles/faw/';
             Config.MAX_VALID_FACE_SCAN_NUMBER = 5;
-            Config.MAX_TOTAL_FACE_SCAN_NUMBER = 50;
-            Config.MAX_TOTAL_FACE_EXPRESSION_SCAN_NUMBER = 50;
+            Config.MAX_TOTAL_FACE_SCAN_NUMBER = 150;
+            Config.MAX_TOTAL_FACE_EXPRESSION_SCAN_NUMBER = 150;
             Config.MIN_ALLOWED_AVERAGE_AGE = 25;
             Config.FACE_SCAN_INTERVAL_MS = 400;
             Config.EVENT_NAME_PREFIX = 'selfieAgeDetectionPage';
@@ -1414,6 +1414,7 @@ var AvsFactory;
                     FaceGuideSmileStartHintLabel: new Avs.Ui.Library.FaceGuideSmileStartHintLabel(SelfieAgeDetectionPage.instance.event),
                     FaceGuideSmileStopHintLabel: new Avs.Ui.Library.FaceGuideSmileStopHintLabel(SelfieAgeDetectionPage.instance.event),
                     FaceGuideLoadingProgressBar: new Avs.Ui.Library.FaceGuideLoadingProgressBar(SelfieAgeDetectionPage.instance.event),
+                    BrightnessIndicatorArea: new Avs.Ui.Library.BrightnessIndicatorArea(SelfieAgeDetectionPage.instance.event),
                 };
                 SelfieAgeDetectionPage.instance.ui.SelfieAgeDetectionLoadingLabelPercentCounter.setStepNumber(5);
                 SelfieAgeDetectionPage.instance.ui.FaceGuideLoadingProgressBar.hide();
@@ -1423,6 +1424,7 @@ var AvsFactory;
                 SelfieAgeDetectionPage.instance.ui.SelfieAgeDetectionLoadingLabelArea.hide();
                 SelfieAgeDetectionPage.instance.ui.SelfieAgeDetectionLoadingLabelPercentCounter.hide();
                 SelfieAgeDetectionPage.instance.ui.FaceGuideAgeArea.hide();
+                SelfieAgeDetectionPage.instance.ui.BrightnessIndicatorArea.hide();
             };
             return Ui;
         }());
@@ -1464,6 +1466,8 @@ var AvsFactory;
                 Method.repositionScanId();
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.getVideoElement().addClass('mirrored');
                 SelfieAgeDetectionPage.instance.ui.SelfieAgeDetectionStatusLabel.setValue('Trying to access your camera');
+                // Show brightness indicator when video starts
+                SelfieAgeDetectionPage.instance.ui.BrightnessIndicatorArea.show();
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.init();
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.showVideo();
                 SelfieAgeDetectionPage.instance.ui.FaceGuideLoadingProgressBar.show();
@@ -1659,11 +1663,13 @@ var AvsFactory;
                     Method.goToFailStep(25067, 'Could not detect enough faces from your device video');
                     return;
                 }
+                SelfieAgeDetectionPage.instance.ui.BrightnessIndicatorArea.hide();
                 AvsFactory.StartPage.Method.showPageStep(AvsFactory.StartPage.Config.RESULT_PAGE_SUCCESS_LAYER);
                 AvsFactory.ResultPageSuccess.init();
                 SelfieAgeDetectionPage.instance.plugin.Library.Video.CameraSource.datachannels.webrtc.stopStreaming();
             };
             Method.goToFailStep = function (failCode, failReason) {
+                SelfieAgeDetectionPage.instance.ui.BrightnessIndicatorArea.hide();
                 AvsFactory.StartPage.Method.showPageStep(AvsFactory.StartPage.Config.RESULT_PAGE_FAIL_LAYER);
                 AvsFactory.ResultPageFail.init();
                 AvsFactory.ResultPageFail.Method.saveError(failCode);

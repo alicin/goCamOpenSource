@@ -17737,9 +17737,10 @@ var Avs;
                 $(element).css({
                     //position: 'fixed',
                     //border  : 'solid',
+                    // top     : positioning.top,
+                    top: 'calc(50% - ' + (positioning.height / 2) + 'px)',
                     width: positioning.width,
                     height: positioning.height,
-                    top: positioning.top,
                     left: positioning.left,
                 });
             };
@@ -20566,6 +20567,58 @@ var Avs;
             })(Video = Library.Video || (Library.Video = {}));
         })(Library = Plugin.Library || (Plugin.Library = {}));
     })(Plugin = Avs.Plugin || (Avs.Plugin = {}));
+})(Avs || (Avs = {}));
+
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Avs;
+(function (Avs) {
+    var Ui;
+    (function (Ui) {
+        var Library;
+        (function (Library) {
+            var BrightnessIndicatorArea = /** @class */ (function (_super) {
+                __extends(BrightnessIndicatorArea, _super);
+                function BrightnessIndicatorArea(event, selector) {
+                    var _this = _super.call(this, event) || this;
+                    _this.event = event;
+                    _this.getElement(selector);
+                    _this.initStates();
+                    return _this;
+                }
+                BrightnessIndicatorArea.prototype.getElement = function (selector) {
+                    if (!selector) {
+                        selector = '#brightnessIndicatorArea';
+                    }
+                    this.element = $(selector);
+                };
+                BrightnessIndicatorArea.prototype.initStates = function () {
+                    var entity = Avs.Entity.Ui.getInstance();
+                    entity.states.BrightnessIndicatorArea = {
+                        visible: this.element.is(':visible'),
+                        value: this.element.html()
+                    };
+                    this.states = entity.states.BrightnessIndicatorArea;
+                };
+                return BrightnessIndicatorArea;
+            }(Avs.Ui.Handler.Text));
+            Library.BrightnessIndicatorArea = BrightnessIndicatorArea;
+        })(Library = Ui.Library || (Ui.Library = {}));
+    })(Ui = Avs.Ui || (Avs.Ui = {}));
 })(Avs || (Avs = {}));
 
 "use strict";
